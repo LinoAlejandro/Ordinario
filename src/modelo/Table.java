@@ -24,7 +24,7 @@ public class Table implements Serializable {
 	private static final long serialVersionUID = -6620896854733069330L;
 	private String name;
 	private ArrayList<Column> columnas;
-	private File data;
+	private File file;
 	private ArrayList<File> arboles;
 	
 	//El valor de la propiedad determina si existio un cambió en algún otro lado en el archivo fuera de la aplicación
@@ -76,7 +76,7 @@ public class Table implements Serializable {
 	}
 
 	public File getData() {
-		return data;
+		return file;
 	}
 
 	public void setData(String nombreBase, File data) throws IOException, NumberFormatException, TypeNotSupportedException, NotCorrectFormatTimeException {
@@ -121,7 +121,11 @@ public class Table implements Serializable {
 			}   
 		}
 		serializarArboles(nombreBase, arboles);
-		this.data = data;
+		this.file = data;
+	}
+	
+	public void setFile(File file){
+		this.file = file;
 	}
 
 	private void serializarArboles(String nombreBase, ArrayList<Arbol> arboles) throws FileNotFoundException, IOException {
@@ -131,6 +135,15 @@ public class Table implements Serializable {
 			out.writeObject(getColumna().get(c));
 			out.close();
 		}
+	}
+	
+	public boolean doesColumnExists(String nombre){
+		for (Column columna : getColumna()) {
+			if(columna.getNombre().equals(columna.getNombre())){
+				return true;
+			}
+		}
+		return false;
 	}
 
 	public void setArboles(ArrayList<File> arboles) {

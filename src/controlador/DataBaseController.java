@@ -14,7 +14,9 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 
 import modelo.Accion;
+import modelo.Arbol;
 import modelo.Column;
+import modelo.Comparators;
 import modelo.Data;
 import modelo.DataBase;
 import modelo.Restriccion;
@@ -41,19 +43,78 @@ public class DataBaseController {
 	
 	public DataBaseController(){ }
 	
-	public ArrayList<String[]> executeSelection(String string) throws SyntaxErrorException, NoDataBaseSelectedException{
+	public ArrayList<String[]> executeSelection(String string) throws SyntaxErrorException, NoDataBaseSelectedException, NoColumnFoundException, IOException, NoTableInExistanceException{
 		if(databaseInUse != null){
 			if(string.startsWith("from ")){
-				 string = string.replaceFirst("from ", "");
-				 if(string.contains("where")){
-					 
-				 } else {
-					 if(!(string.contains(" "))){
-						 
-					 } else {
-						 throw new SyntaxErrorException();
-					 }
-				 }
+				string = string.replaceFirst("from ", "");
+				ArrayList<String[]> datos = new ArrayList<>();
+				if(string.contains("where")){
+					String tableName = string.substring(0, string.indexOf(" where"));
+					if(databaseInUse.tableExists(tableName)) {
+						Table table = databaseInUse.getTabla(tableName);
+						string = string.substring(string.indexOf(" where "), string.length());
+						String[] acciones = string.split(" ");
+						if(acciones.length > 2) {
+							if(table.doesColumnExists(acciones[0])){
+								Comparators comparador = null;
+								switch(acciones[1]){
+									case ">=":
+										comparador = Comparators.MAYORIGUAL;
+									break;
+									case "<=":
+										comparador = Comparators.MENORIGUAL;
+										break;
+									case ">":
+										comparador = Comparators.MAYOR;
+										break;
+									case "<":
+										comparador = Comparators.MENOR;
+										break;
+									case "==":
+										comparador = Comparators.IGUAL;
+										break;
+									default:
+										throw new SyntaxErrorException();
+								}
+								switch(comparador) {
+									case IGUAL:
+										
+										break;
+									case MAYOR:
+										break;
+									case MAYORIGUAL:
+										break;
+									case MENOR:
+										break;
+									case MENORIGUAL:
+										break;
+								}
+							} else {
+								throw new NoColumnFoundException();
+							}
+						} else {
+							throw new SyntaxErrorException();
+						}
+					} else {
+						throw new NoTableInExistanceException();
+					}
+				} else {
+					if(!(string.contains(" "))){
+						if(databaseInUse.tableExists(string)){
+							File file = databaseInUse.getTabla(string).getData();
+							BufferedReader br = new BufferedReader(new FileReader(file));
+							for(String line; (line = br.readLine()) != null; ) {
+								String[] stringcitos = line.split("(,)(?=(?:[^\"]|\"[^\"]*\")*$)");
+								datos.add(stringcitos);
+							}
+							return datos;
+						} else {
+							throw new NoColumnFoundException();
+						}
+					} else {
+						throw new SyntaxErrorException();
+					}
+				}
 			} else {
 				throw new SyntaxErrorException();
 			}
@@ -151,6 +212,7 @@ public class DataBaseController {
 					String substring = sql.substring(0, index);
 					if(!substring.contains(" ")){
 						if(!databaseInUse.tableExists(substring)){
+							
 							File file = new File("databases" + "/" + databaseInUse.getNombre() + "/" + substring + ".csv");
 							Table table = new Table(sql.substring(0, index));
 							
@@ -160,10 +222,13 @@ public class DataBaseController {
 							for (int i = 1; i < caracteristicasTabla.length - 1; i++) {
 								columnas.add(createColumn(caracteristicasTabla[i]));
 							}
+							
 							table.setColumna(columnas);
 							table.setData(databaseInUse.getNombre(), file);
+							table.setFile(file);
 							databaseInUse.addTable(table);
 							return 1;
+							
 						} else {
 							throw new TableAlreadyExistsException();
 						}
@@ -180,6 +245,7 @@ public class DataBaseController {
 					if(!substring.contains(" ")){
 						if(databaseInUse.tableExists(substring)){
 							File file = new File("databases" + "/" + databaseInUse.getNombre() + "/" + substring + ".csv");
+							file.mkdir();
 							Table table = new Table(sql.substring(0, index));
 							table.setData(databaseInUse.getNombre(), file);
 							String[] caracteristicasTabla = sql.split("\n");
