@@ -1,56 +1,51 @@
+import java.io.IOException;
 import java.util.ArrayList;
 
 import controlador.DataBaseController;
+import modelo.Accion;
 import modelo.Column;
 import modelo.Data;
 import modelo.DataBase;
 import modelo.Restriccion;
 import modelo.Table;
 import modelo.Tipo;
+import modelo.exceptions.BadTableRefenrece;
+import modelo.exceptions.DataBaseAlreadyExistsExceptions;
 import modelo.exceptions.DbInExistanceException;
+import modelo.exceptions.NoColumnFoundException;
+import modelo.exceptions.NoCompatibleTypesException;
+import modelo.exceptions.NoDataBaseInExistance;
+import modelo.exceptions.NoDataBaseSelectedException;
+import modelo.exceptions.NoTableInExistanceException;
+import modelo.exceptions.NotCorrectFormatTimeException;
+import modelo.exceptions.SyntaxErrorException;
+import modelo.exceptions.TableAlreadyExistsException;
+import modelo.exceptions.TypeNotSupportedException;
 
 public class DBTest {
 
-	public static void main(String[] args) throws DbInExistanceException {
+	public static void main(String[] args) throws DbInExistanceException, ClassNotFoundException, NoDataBaseInExistance, IOException, SyntaxErrorException, DataBaseAlreadyExistsExceptions, NoDataBaseSelectedException, ArrayIndexOutOfBoundsException, NumberFormatException, TableAlreadyExistsException, BadTableRefenrece, NoTableInExistanceException, NoColumnFoundException, NoCompatibleTypesException, NotCorrectFormatTimeException, TypeNotSupportedException {
 		DataBaseController controller = new DataBaseController();
-		controller.createDatabase("Escuela");
+		//int total = controller.executeUpgrade(Accion.CREATE, "database sample;"); 
 		
+		int total = controller.executeUpgrade(Accion.USE, "sample;");
 		
-		/*****            Individual Test             *****/
-		DataBase db = new DataBase("Escuela");
-		
-		Table alumnos = new Table("Alumno");
-		
-		Column nombre = new Column("nombre");
-		nombre.setType(Tipo.STRING);
-		nombre.addRestriccion(Restriccion.NOT_NULL);
-		
-		Column apellido = new Column("apellido");
-		apellido.setType(Tipo.STRING);
-		apellido.addRestriccion(Restriccion.NOT_NULL);
-		
-		Column promedio = new Column("promedio");
-		promedio.setType(Tipo.DOUBLE);
-		promedio.addRestriccion(Restriccion.DEFAULT);
-		promedio.setDefaultValue(new Data(8.2));
-		
-		alumnos.addColumn(nombre);
-		alumnos.addColumn(apellido);
-		alumnos.addColumn(promedio);
-		
-		Table salon = new Table("salon");
-		
-		Column nombreSalon = new Column("nombre");
-		nombreSalon.setType(Tipo.STRING);
-		nombreSalon.addRestriccion(Restriccion.NOT_NULL);
-		
-		Column numero = new Column("numero");
-		numero.setType(Tipo.INTEGER);
-		numero.addRestriccion(Restriccion.NOT_NULL);
-		
-		salon.addColumn(nombreSalon);
-		salon.addColumn(numero);
-		
-		controller.executeQuery("Create database school;");
+		total = controller.executeUpgrade(Accion.CREATE, "table as Alumno (\n" + 
+															"id integer not_null\n" +
+															"dato2 string not_null\n" +
+															"dato3 string not_null\n" +
+															"dato4 integer not_null\n" +
+															"dato5 double not_null\n" +
+															"dato6 double not_null\n" +
+															"dato7 double not_null\n" +
+															"dato8 string not_null\n" +
+															"dato9 string not_null\n" +
+															"dato10 double not_null\n" +
+															");");
+		System.out.println(total);
+		//int total = controller.executeUpgrade(Accion.USE, "school;");
+		//System.out.println(total);		
+		//total = controller.executeUpgrade(Accion.CREATE, "table alumnos()");
+		//System.out.println(total);
 	}
 }

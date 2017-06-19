@@ -7,7 +7,8 @@ public enum Restriccion {
 	UNIQUE (3),
 	PRIMARY_KEY(4),
 	FOREIGN_KEY(5),
-	DEFAULT(6);
+	DEFAULT(6),
+	IDENTITY(7);
 	
 	private final int value;
 	

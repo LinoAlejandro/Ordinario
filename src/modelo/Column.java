@@ -5,30 +5,21 @@ import java.util.ArrayList;
 
 public class Column<T> implements Serializable{
 	
-	public ArrayList<Data<T>> getDatos() {
-		return datos;
-	}
-
-	public void setDatos(ArrayList<Data<T>> datos) {
-		this.datos = datos;
-	}
 
 	private String nombre;
 	private Tipo type;
-	private ArrayList<Data<T>> datos;
-	
+	private ArrayList<Restriccion> restricciones;
+	private Table tablaForanea;
+	private Column columnaForanea;
+	private Data valorDefault;
+
 	public Column(String nombre){
 		this.nombre = nombre;
-		datos = new ArrayList<Data<T>>();
+		restricciones = new ArrayList<Restriccion>();
 	}
 	
-	public void addData(T dato){
-		Data data = new Data<T>(dato);
-		datos.add(data);
-	}
-	
-	public Column(){
-		datos = new ArrayList<Data<T>>();
+	public void addRestriccion(Restriccion restriccion){
+		restricciones.add(restriccion);
 	}
 	
 	public String getNombre() {
@@ -45,5 +36,46 @@ public class Column<T> implements Serializable{
 	
 	public void setType(Tipo string) {
 		this.type = string;
+	}
+
+	public ArrayList<Restriccion> getRestricciones() {
+		return restricciones;
+	}
+
+	public void setRestricciones(ArrayList<Restriccion> restricciones) {
+		this.restricciones = restricciones;
+	}
+	
+	public boolean isRestriccionInExistance(Restriccion restriccionComparar){
+		for (Restriccion restriccion : restricciones) {
+			if(restriccion == restriccionComparar){
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public Column getColumnaForanea() {
+		return columnaForanea;
+	}
+
+	public void setColumnaForanea(Column columnaForanea) {
+		this.columnaForanea = columnaForanea;
+	}
+
+	public Table getTablaForanea() {
+		return tablaForanea;
+	}
+
+	public void setTablaForanea(Table tablaForanea) {
+		this.tablaForanea = tablaForanea;
+	}
+
+	public Data getValorDefault() {
+		return valorDefault;
+	}
+
+	public void setValorDefault(Data valorDefault) {
+		this.valorDefault = valorDefault;
 	}
 }

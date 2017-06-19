@@ -13,15 +13,15 @@ public class Test {
 		Arbol<Data> abb = new Arbol<>();
 		
 		try {
+//35
+//8.33
+			abb.insertar(new Data(35.0), 0);
+			abb.insertar(new Data(68.02), 1);
+			abb.insertar(new Data(2.99), 2);
+			abb.insertar(new Data(3.99), 3);
+			abb.insertar(new Data(5.94), 4);
+			abb.insertar(new Data(4.95), 5);
 			
-			abb.insertar(new Data(50));
-			abb.insertar(new Data(25));
-			abb.insertar(new Data(35));
-			abb.insertar(new Data(60));
-			abb.insertar(new Data(45));
-			abb.insertar(new Data(70));
-			abb.insertar(new Data(80));
-			abb.insertar(new Data(90));
 			
 		} catch (TypeNotSupportedException e) {
 			e.printStackTrace();
@@ -31,11 +31,8 @@ public class Test {
 		System.out.println();
 		abb.inOrden();
 		System.out.println();
-		abb.eliminarNodo(new Data(50));
-		abb.inOrden();
-		System.out.println();
-		System.out.println((((Data<StringBuffer>) nodo.getIzquierda().getContenido()).getIntegerValue()));
-		System.out.println(nodo.getContenido().getIntegerValue());
-		System.out.println((((Data<StringBuffer>) nodo.getDerecha().getContenido()).getIntegerValue()));
+		System.out.println((((Data<StringBuffer>) nodo.getIzquierda().getContenido()).getDoubleValue()));
+		System.out.println(nodo.getContenido().getDoubleValue());
+		System.out.println((((Data<StringBuffer>) nodo.getDerecha().getContenido()).getDoubleValue()));
 	}
 }

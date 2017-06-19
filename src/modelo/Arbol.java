@@ -17,16 +17,13 @@ public class Arbol<T> implements Serializable{
 	private Nodo<T> root;
 	
 	public void insertar(Data data, int noFila) throws TypeNotSupportedException {
-		
 		T datos = (T) data.getInternalData();
 		
 		if(datos instanceof StringBuffer){
 			StringBuffer sb = (StringBuffer)data.getInternalData();
 			insertarData(sb, noFila);
-		} else if (datos instanceof Byte || datos instanceof Integer || datos instanceof Double || datos instanceof Time || datos instanceof LocalDate){
-			insertarData(data, noFila);
 		} else {
-			throw new TypeNotSupportedException();
+			insertarData(data, noFila);
 		}
 	}
 	
@@ -55,7 +52,6 @@ public class Arbol<T> implements Serializable{
 			else 
 				ant.setIzquierda(nodo);
 			
-			
 			balancear();
 		}
 	}
@@ -76,7 +72,6 @@ public class Arbol<T> implements Serializable{
 					aux = aux.getDerecha();
 				else
 					aux = aux.getIzquierda();
-				
 			}
 		
 			if(texto.compareTo(ant.getContenido().toString()) > 0) 
@@ -103,26 +98,102 @@ public class Arbol<T> implements Serializable{
 			//inclinado a la derecha
 			//tres escenarios
 			
-			if(nodo.getDerecha().getIzquierda() == null)
+			if(nodo.getDerecha().getIzquierda() == null) {;
 				balancearDerechaEnLinea(nodo);
-			else {
-				if(nodo.getDerecha().getIzquierda() != null && nodo.getDerecha().getDerecha() != null)
-					balancearDerechaHijos(nodo);
-				else 
+			} else {
+				if(nodo.getDerecha().getIzquierda() != null && nodo.getDerecha().getDerecha() != null) {
+					if(nodo.getDerecha().getIzquierda().isLeaf()){
+						balancearDerechaHijos(nodo);
+					} else {
+						balancearDerechaHijosSegundaOpcion(nodo);
+					}
+				} else {
 					balancearDerechaEnZigZag(nodo);
+				}
 			}
 			
 		} else {
 			//inclinado a la izquierda
 			//tres escenarios
-			if(nodo.getIzquierda().getDerecha() == null)
+			if(nodo.getIzquierda().getDerecha() == null) {
 				balancearIzquierdaEnLinea(nodo);
-			else {
-				if(nodo.getIzquierda().getDerecha() != null && nodo.getIzquierda().getIzquierda() != null)
-					balancearIzquierdaHijos(nodo);
-				else 
+			} else {
+				if(nodo.getIzquierda().getDerecha() != null && nodo.getIzquierda().getIzquierda() != null){
+					if(nodo.getIzquierda().getDerecha().isLeaf()){
+						balancearIzquierdaHijos(nodo);
+					} else {
+						balancearIzquierdaHijosSegundaOpcion(nodo);
+					}
+				} else {
 					balancearIzquierdaZigZag(nodo);
+				}
 			}
+		}
+	}
+
+	private void balancearDerechaHijosSegundaOpcion(Nodo<T> nodo) {
+		if(nodo.getDerecha().getIzquierda().getIzquierda() != null){
+			Nodo nodoPorMover = nodo.getDerecha().getIzquierda().getIzquierda();
+			
+			nodoPorMover.setIzquierda(nodo.getDerecha());
+			T contenido = nodo.getContenido();
+			nodo.getIzquierda().getIzquierda().setIzquierda(null);
+			
+			nodo.setContenido((T) nodoPorMover.getContenido());
+			nodoPorMover.setContenido(contenido);
+			
+			nodo.setIzquierda(nodoPorMover);
+			
+		} else {
+			
+			Nodo nodoPorMover = nodo.getDerecha().getIzquierda().getDerecha();
+			Nodo ant = nodo.getDerecha().getIzquierda();
+			
+			T contenido = (T) ant.getContenido();
+			ant.setContenido(nodoPorMover.getContenido());
+			nodoPorMover.setContenido(contenido);
+			
+			nodoPorMover.setIzquierda(nodo.getDerecha());
+			T content = nodo.getContenido();
+			nodo.getDerecha().getIzquierda().setDerecha(null);
+			
+			nodo.setContenido((T) nodoPorMover.getContenido());
+			nodoPorMover.setContenido(content);
+			
+			nodo.setIzquierda(nodoPorMover);
+		}
+	}
+
+	private void balancearIzquierdaHijosSegundaOpcion(Nodo<T> nodo) {
+		if(nodo.getIzquierda().getDerecha().getDerecha() != null){
+			Nodo nodoPorMover = nodo.getIzquierda().getDerecha().getDerecha();
+			
+			nodoPorMover.setDerecha(nodo.getDerecha());
+			T contenido = nodo.getContenido();
+			nodo.getIzquierda().getDerecha().setDerecha(null);
+			
+			nodo.setContenido((T) nodoPorMover.getContenido());
+			nodoPorMover.setContenido(contenido);
+			
+			nodo.setDerecha(nodoPorMover);
+			
+		} else {
+			
+			Nodo nodoPorMover = nodo.getIzquierda().getDerecha().getIzquierda();
+			Nodo ant = nodo.getIzquierda().getDerecha();
+			
+			T contenido = (T) ant.getContenido();
+			ant.setContenido(nodoPorMover.getContenido());
+			nodoPorMover.setContenido(contenido);
+			
+			nodoPorMover.setDerecha(nodo.getDerecha());
+			T content = nodo.getContenido();
+			nodo.getIzquierda().getDerecha().setIzquierda(null);
+			
+			nodo.setContenido((T) nodoPorMover.getContenido());
+			nodoPorMover.setContenido(content);
+			
+			nodo.setDerecha(nodoPorMover);
 		}
 	}
 
@@ -365,7 +436,7 @@ public class Arbol<T> implements Serializable{
 	public Nodo<T> obtenerDesbalanceado(){
 		Nodo<T> nodo= this.escanear();
 		if(nodo != null)
-			nodo = this.getDesbalanceado(nodo);
+			nodo = this.getDesbalanceado(nodo); 
 		return nodo;
 	}
 	

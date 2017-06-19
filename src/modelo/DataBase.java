@@ -1,9 +1,16 @@
 package modelo;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class DataBase {
+import modelo.exceptions.NoTableInExistanceException;
+
+public class DataBase implements Serializable{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -9163008359223124087L;
 	private String nombre;
 	private ArrayList<Table> tablas;
 	
@@ -36,4 +43,21 @@ public class DataBase {
 		this.tablas = tablas;
 	}
 	
+	public Table getTabla(String nombreTabla)  throws NoTableInExistanceException{
+		for (Table table : tablas) {
+			if(table.getName().equals(nombreTabla)){
+				return table;
+			}
+		}
+		throw new NoTableInExistanceException();
+	}
+	
+	public boolean tableExists(String nombreTabla){
+		for (Table table : tablas) {
+			if(table.getName().equals(nombreTabla)){
+				return true;
+			}
+		}
+		return false;
+	}
 }
