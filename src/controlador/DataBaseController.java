@@ -76,19 +76,9 @@ public class DataBaseController {
 									default:
 										throw new SyntaxErrorException();
 								}
-								switch(comparador) {
-									case IGUAL:
+								
+								ArrayList<Integer> lineas = obtainLines(acciones[0], comparador, acciones[2]);
 										
-										break;
-									case MAYOR:
-										break;
-									case MAYORIGUAL:
-										break;
-									case MENOR:
-										break;
-									case MENORIGUAL:
-										break;
-								}
 							} else {
 								throw new NoColumnFoundException();
 							}
@@ -122,6 +112,18 @@ public class DataBaseController {
 			throw new NoDataBaseSelectedException();
 		}
 		
+	}
+
+	private ArrayList<Integer> obtainLines(String nombreColumna ,Comparators comparador, String string) throws IOException, ClassNotFoundException {
+		Arbol arbol = null;
+		File file = new File("database/" + databaseInUse.getNombre() + "/" + nombreColumna + ".cl");
+		Path path = file.toPath();
+		FileInputStream fin;
+		fin = new FileInputStream(path.toString());
+		ObjectInputStream ois = new ObjectInputStream(fin);
+		arbol = (Arbol) ois.readObject();
+		
+		return null;
 	}
 
 	public Integer executeUpgrade(Accion accion, String sql) throws NoDataBaseInExistance, IOException, ClassNotFoundException, SyntaxErrorException, DataBaseAlreadyExistsExceptions, NoDataBaseSelectedException, ArrayIndexOutOfBoundsException, NumberFormatException, TableAlreadyExistsException, BadTableRefenrece, NoTableInExistanceException, NoColumnFoundException, NoCompatibleTypesException, NotCorrectFormatTimeException, TypeNotSupportedException{
